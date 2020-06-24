@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useRect } from './useRect';
 import styled from 'styled-components';
 import { Synth } from 'tone';
 import Drop from './Drop';
@@ -42,6 +43,8 @@ const Earth = styled.div<StyleConstants>`
 `;
 
 export default function App() {
+  const groundRef = useRef(null);
+  const groundRect = useRect(groundRef);
   const rain: Array<any> = useState(buildArray(5))[0];
   const rainStyles: Array<RainStyles> = useState(
     rain.map((_: any) => {
@@ -60,7 +63,7 @@ export default function App() {
     })
   )[0];
 
-  var synth = new Synth().toMaster();
+  var synth = new Synth().toDestination();
   return (
     <Container>
       <Sky
@@ -69,10 +72,14 @@ export default function App() {
           synth.triggerAttackRelease('A3', '8n');
         }}>
         {rain.map((_: any, i: number) => (
-          <Drop key={i} rainStyles={rainStyles[i]} />
+          <Drop
+            key={i}
+            rainStyles={rainStyles[i]}
+            groundPixels={groundRect.top}
+          />
         ))}
       </Sky>
-      <Ground {...constants}>
+      <Ground ref={groundRef} {...constants}>
         {rain.map((_: any, i: number) => (
           <Splash key={i} rainStyles={rainStyles[i]} />
         ))}

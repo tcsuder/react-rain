@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { Synth } from 'tone';
 import styled from 'styled-components';
 import { RainStyles } from './types';
 
@@ -23,9 +24,39 @@ const StyledDrop = styled.div<RainStyles>`
 `;
 
 export default function Drop(props: PropTypes) {
-  return <StyledDrop {...props.rainStyles} />;
+  const dropRef = useRef<HTMLDivElement>(null);
+  // const [top, setTop] = useState(0);
+  var synth = new Synth().toDestination();
+
+  // useEffect(() => {
+  //   if (Math.floor(top) === Math.floor(props.groundPixels)) {
+  //     synth.triggerAttackRelease('A3', '8n');
+  //   } else {
+  //     if (null === dropRef) return;
+  //     if (null === dropRef.current) return;
+  //     const rect = dropRef.current.getBoundingClientRect();
+  //     setTop(rect.top);
+  //   }
+  // }, [top]);
+
+  return (
+    <StyledDrop
+      onAnimationStart={() => {
+        const time =
+          (props.rainStyles.duration + props.rainStyles.delay) * 1000;
+        console.log(time);
+
+        setTimeout(() => {
+          synth.triggerAttackRelease('A3', '8n');
+        }, time);
+      }}
+      ref={dropRef}
+      {...props.rainStyles}
+    />
+  );
 }
 
 type PropTypes = {
   rainStyles: RainStyles;
+  groundPixels: number;
 };

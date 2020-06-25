@@ -41,10 +41,7 @@ const generateDropletStyles: (props: PropTypes) => RainStyles = (
 };
 
 export default function Splash(props: PropTypes) {
-  const [dropletStyles, setDropletStyle] = useState(
-    generateDropletStyles(props)
-  );
-
+  const dropletStyles = useState(generateDropletStyles(props))[0];
   return props.visible ? <StyledDroplet {...dropletStyles} /> : null;
 }
 
